@@ -64,13 +64,6 @@ export default function NavigationBar() {
           isActive={location.pathname === "/sign-in"}>
           <NavLink to="/sign-in">Login</NavLink>
         </NavbarItem>
-        <NavbarItem>
-          <NavLink to="/sign-up">
-            <Button as={Link} color="primary" variant="flat">
-              Sign Up
-            </Button>
-          </NavLink>
-        </NavbarItem>
       </NavbarContent>
       <NavbarMenu>
         {navlinks.map(({ href, label }, index) => (
