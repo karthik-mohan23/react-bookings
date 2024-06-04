@@ -2,27 +2,38 @@ import { Input } from "@nextui-org/input";
 import { Button, Divider } from "@nextui-org/react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../config/firebase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth, db } from "../config/firebase";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 
 function SignUp() {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async (e) => {
+  const handleLogin = (e) => {
     e.preventDefault();
-    // if (!fullname || !email || !password) return;
+    let user;
+    if (!fullname || !email || !password) return;
     console.log({ fullname, email, password });
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        const user = userCredential.user;
-        console.log(user);
+        user = userCredential.user;
       })
+      .then(() =>
+        updateProfile(auth.currentUser, {
+          displayName: fullname,
+        }).then(() => {
+          const userData = { fullname, email, timestamp: serverTimestamp() };
+          if (user !== null) {
+            setDoc(doc(db, "users", user.uid), userData);
+          } else {
+            throw new Error("user not found");
+          }
+        })
+      )
       .catch((error) => {
         console.log(error);
-        const errorCode = error.code;
-        const errorMessage = error.message;
       });
   };
 
