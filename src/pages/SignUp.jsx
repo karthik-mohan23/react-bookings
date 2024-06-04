@@ -1,17 +1,20 @@
 import { Input } from "@nextui-org/input";
 import { Button, Divider } from "@nextui-org/react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../config/firebase";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { toast } from "sonner";
 
 function SignUp() {
   const [fullname, setFullname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
+  const navigate = useNavigate();
+
+  const handleRegister = (e) => {
     e.preventDefault();
     let user;
     if (!fullname || !email || !password) return;
@@ -27,7 +30,10 @@ function SignUp() {
           const userData = { fullname, email, timestamp: serverTimestamp() };
           if (user !== null) {
             setDoc(doc(db, "users", user.uid), userData);
+            navigate("/");
+            toast.success("Successfully signed in");
           } else {
+            toast.error("Error signing in");
             throw new Error("user not found");
           }
         })
@@ -40,10 +46,10 @@ function SignUp() {
   return (
     <section className="pt-9">
       <h2 className="text-center text-2xl font-bold pb-9">
-        Log in to your account.
+        Create new account.
       </h2>
       <form
-        onSubmit={handleLogin}
+        onSubmit={handleRegister}
         className="flex flex-col max-w-sm mx-auto  gap-4">
         <Input
           type="text"
