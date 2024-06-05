@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@nextui-org/react";
 
-function GoogleOAuth() {
+function RegisterGoogleButton() {
   const navigate = useNavigate();
 
   const onGoogleCLick = async () => {
@@ -35,7 +35,7 @@ function GoogleOAuth() {
       }
     } catch (error) {
       console.log(error);
-      const credential = GoogleAuthProvider.credentialFromError(error);
+      toast.error("Error while signing in");
     }
   };
 
@@ -45,4 +45,4 @@ function GoogleOAuth() {
     </Button>
   );
 }
-export default GoogleOAuth;
+export default RegisterGoogleButton;

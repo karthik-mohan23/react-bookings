@@ -1,16 +1,40 @@
 import { Input } from "@nextui-org/input";
 import { Button, Divider } from "@nextui-org/react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { auth } from "../config/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import LoginGoogleButton from "../components/LoginGoogleButton";
 
 function SignIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
+
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!email || !password) return;
     console.log({ email, password });
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      console.log(user);
+      if (!user) {
+        toast.error("user doesn't exist");
+        throw new Error("user doesn't exist");
+      }
+      navigate("/");
+      toast.success("Successfully logged in");
+    } catch (error) {
+      toast.error("Error logging in");
+      console.log(error);
+    }
   };
 
   return (
@@ -50,11 +74,11 @@ function SignIn() {
             <Link to="/forgot-password"> Forgot Password?</Link>
           </span>
         </div>
-        <Button type="submit" color="primary">
+        <Button onClick={handleLogin} type="submit" color="primary">
           SIGN IN
         </Button>
         <Divider className="my-4" />
-        <Button color="danger">CONTINUE WITH GOOGLE</Button>
+        <LoginGoogleButton />
       </form>
     </section>
   );

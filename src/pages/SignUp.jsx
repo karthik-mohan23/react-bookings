@@ -6,7 +6,7 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db } from "../config/firebase";
 import { doc, serverTimestamp, setDoc } from "firebase/firestore";
 import { toast } from "sonner";
-import GoogleOAuth from "../components/GoogleOAuth";
+import RegisterGoogleButton from "../components/RegisterGoogleButton";
 
 function SignUp() {
   const [fullname, setFullname] = useState("");
@@ -93,7 +93,7 @@ function SignUp() {
           SIGN UP
         </Button>
         <Divider className="my-4" />
-        <GoogleOAuth />
+        <RegisterGoogleButton />
       </form>
     </section>
   );
